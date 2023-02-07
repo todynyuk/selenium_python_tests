@@ -8,32 +8,28 @@ from pages.base_page import BasePage
 class MainPage(BasePage):
     locators = MainPageLocators()
 
-    def __init__(self, web_driver, url=''):
-        url = 'https://rozetka.com.ua/ua/'
-        super().__init__(web_driver, url)
-
-    def click_universal_category_link(self, category, driver):
-        driver.find_element(By.XPATH, "//a[@class='menu-categories__link' and contains(.,'%s')]" % str(
-            category)).click()
+    def click_universal_category_link(self, driver, category):
+        driver.find_element(By.XPATH, f"//a[@class='menu-categories__link' and contains(.,'{category}')]").click()
         time.sleep(3)
 
-    def set_search_input(self, driver, param):
-        driver.find_element(By.CSS_SELECTOR, "input[name='search']").send_keys(param)
+    def set_search_input(self, param):
+        self.element_is_visible(self.locators.SEARCH_INPUT).send_keys(param)
 
-    def click_search_button(self, driver):
-        driver.find_element(By.XPATH, "//button[contains(@class,'button_color_green')]").click()
+    def click_search_button(self):
+        self.element_is_visible(self.locators.SEARCH_BUTTON).click()
 
-    def get_goods_title_text(self, driver):
+    def get_goods_title_text(self):
+        buffer = self.elements_are_present(self.locators.GOODS_TITLE_TEXTS)
         goods_title_texts = []
-        for elem in driver.find_elements(By.XPATH, "//span[@class='goods-tile__title']"):
+        for elem in buffer:
             goods_title_texts.append(elem.text)
         return goods_title_texts
 
-    def verify_is_search_brand_present_in_goods_title(self, driver, brand):
-        goods_title_texts = [x.lower() for x in MainPage.get_goods_title_text(self, driver)]
+    def verify_is_search_brand_present_in_goods_title(self, brand):
+        goods_title_texts = [x.lower() for x in MainPage.get_goods_title_text(self)]
         res = all([ele for ele in str(brand).lower() if (ele in goods_title_texts)])
         return res
 
-    def verify_wrong_search_request(self, driver):
+    def verify_wrong_search_request(self):
         time.sleep(2)
-        return driver.find_element(By.XPATH, "//span[@class='ng-star-inserted']").is_displayed()
+        return self.element_is_present(self.locators.NOT_FOUND_TEXT).is_displayed()

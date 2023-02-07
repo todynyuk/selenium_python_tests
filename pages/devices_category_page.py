@@ -1,3 +1,4 @@
+from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By
 import time
 import re
@@ -5,40 +6,39 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
+from locators.elements_page_locators import DeviceCategoryLocators
 from pages.base_page import BasePage
 
 
 class DeviceCategory(BasePage):
-
-    def __init__(self, web_driver, url=''):
-        url = 'https://rozetka.com.ua/ua/'
-        super().__init__(web_driver, url)
+    locators = DeviceCategoryLocators()
 
     def clear_and_set_sorting_price(self, driver, price_input_type, price_value):
         universal_price_input_value = driver.find_element(By.XPATH,
-                                                          "//input[@formcontrolname='%s']" % str(price_input_type))
+                                                          f"//input[@formcontrolname='{price_input_type}']")
         universal_price_input_value.clear()
         universal_price_input_value.send_keys(price_value)
 
     def click_ok_button(self, driver):
-        ok_button = driver.find_element(By.XPATH, "//button[contains(@class,'slider-filter__button')]")
-        ok_button.click()
+        driver.find_element(By.XPATH, DeviceCategoryLocators.OK_BUTTON).click()
         time.sleep(3)
 
     def get_prices_list(self, driver):
         choosen_price_devices = []
-        for elem in driver.find_elements(By.XPATH, "//span[@class='goods-tile__price-value']"):
+        for elem in driver.find_elements(By.XPATH, DeviceCategoryLocators.DEVICE_PRICES):
             choosen_price_devices.append(re.sub('\D', '', elem.text))
         return choosen_price_devices
 
     def click_check_box_filter(self, driver, param):
-        xpath = f"//a[contains(@data-id,'{param}')]"
-        driver.find_element(By.XPATH, xpath).click()
+        element = driver.find_element(By.XPATH, f"//a[contains(@data-id,'{param}')]")
+        action = ActionChains(driver)
+        action.move_to_element(element).perform()
+        element.click()
         time.sleep(3)
 
     def get_goods_title_text(self, driver):
         goods_title_texts = []
-        for elem in driver.find_elements(By.XPATH, "//span[@class='goods-tile__title']"):
+        for elem in driver.find_elements(By.XPATH, DeviceCategoryLocators.GOODS_TITLE_TEXT):
             goods_title_texts.append(elem.text)
         return goods_title_texts
 
@@ -57,9 +57,10 @@ class DeviceCategory(BasePage):
 
     def check_is_all_goods_available(self, driver, param):
         status_text_list = []
+        driver.execute_script("window.scrollTo(0, 220)")
         is_available_status_text_list = driver.find_elements(By.XPATH,
-                                                             "//div[contains(@class,'goods-tile__availability') and contains(text(),'%s')]" % str(
-                                                                 param))
+                                                             f"//div[contains(@class,'goods-tile__availability') and "
+                                                             f"contains(text(),'{param}')]")
         for elem in is_available_status_text_list:
             status_text_list.append(elem.text)
         time.sleep(3)
@@ -67,14 +68,14 @@ class DeviceCategory(BasePage):
 
     def clickDropdownOption(self, driver, param):
         dropDownOption = driver.find_element(By.XPATH,
-                                             "//select[contains(@class,'select-css')]/option[contains(text(),'%s')]" % str(
-                                                 param))
+                                             f"//select[contains(@class,'select-css')]/option[contains(text(),"
+                                             f"'{param}')]")
         dropDownOption.click()
         time.sleep(3)
 
     def isAllGoodsSortedFromLowToHighPrice(self, driver):
         low_to_hight_price_list = []
-        priceItemText = driver.find_elements(By.XPATH, "//span[@class='goods-tile__price-value']")
+        priceItemText = driver.find_elements(By.XPATH, DeviceCategoryLocators.DEVICE_PRICES)
         for i in priceItemText:
             low_to_hight_price_list.append(re.sub('\D', '', i.text))
         return all(low_to_hight_price_list[j] <= low_to_hight_price_list[j + 1] for j in
@@ -82,7 +83,7 @@ class DeviceCategory(BasePage):
 
     def isAllGoodsSortedFromHighToLowPrice(self, driver):
         low_to_hight_price_list = []
-        priceItemText = driver.find_elements(By.XPATH, "//span[@class='goods-tile__price-value']")
+        priceItemText = driver.find_elements(By.XPATH, DeviceCategoryLocators.DEVICE_PRICES)
         for i in priceItemText:
             low_to_hight_price_list.append(re.sub('\D', '', i.text))
         return all(low_to_hight_price_list[j] >= low_to_hight_price_list[j + 1] for j in
@@ -91,8 +92,7 @@ class DeviceCategory(BasePage):
     def choose_ram_сapacity(self, driver, ram_capacity):
         WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable(
-                (By.XPATH, "//a[contains(@class,'tile-filter__link') and contains(text(),'%s')]" % str(
-                    ram_capacity)))).click()
+                (By.XPATH, f"//a[contains(@class,'tile-filter__link') and contains(text(),'{ram_capacity}')]"))).click()
 
     def getSmartphonePriceText(self, driver, index):
         driver.execute_script("window.scrollTo(0, 220)")
@@ -101,7 +101,7 @@ class DeviceCategory(BasePage):
 
     def isAllGoodsSortedFromHighToLowPrice(self, driver):
         low_to_hight_price_list = []
-        priceItemText = driver.find_elements(By.XPATH, "//span[@class='goods-tile__price-value']")
+        priceItemText = driver.find_elements(By.XPATH, DeviceCategoryLocators.DEVICE_PRICES)
         for i in priceItemText:
             low_to_hight_price_list.append(re.sub('\D', '', i.text))
         return all(low_to_hight_price_list[j] >= low_to_hight_price_list[j + 1] for j in
@@ -109,18 +109,20 @@ class DeviceCategory(BasePage):
 
     def isAddedToCartGoodsCounterTextPresent(self, driver):
         try:
-            driver.find_element(By.XPATH, "//span[contains(@class,'badge--green')]")
+            time.sleep(2)
+            driver.find_element(By.XPATH, DeviceCategoryLocators.CART_GOODS_COUNTER_TEXT)
         except NoSuchElementException:
             return False
         return True
 
     def clickBuyButtonByIndex(self, driver, index):
-        xpath = f"//button[contains(@class,'buy-button')][{index}]"
-        driver.find_element(By.XPATH, xpath).click()
+        driver.execute_script("window.scrollTo(0, 250)")
+        time.sleep(2)
+        element = driver.find_element(By.XPATH, f"//button[contains(@class,'buy-button')][{index}]")
+        element.click()
 
     def clickOnShoppingBasketButton(self, driver):
-        shopping_basket_button = driver.find_element(By.XPATH,
-                                                     "//li[contains(@class,'cart')]/*/button[contains(@class,'header__button')]")
+        shopping_basket_button = driver.find_element(By.XPATH, DeviceCategoryLocators.SHOPPING_BASKET_BUTTON)
         shopping_basket_button.click()
         time.sleep(3)
 
@@ -132,3 +134,6 @@ class DeviceCategory(BasePage):
     def clickUniversalShowCheckBoxButton(self, driver, param):
         xpath = f"//span[@class='sidebar-block__toggle-title' and contains (., '{param}')]"
         driver.find_element(By.XPATH, xpath).click()
+
+    def go_to_up_page(self, driver):
+        driver.execute_script("window.scrollTo(0, 220)")

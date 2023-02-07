@@ -10,6 +10,5 @@ class SubCategory():
 
     def click_universal_subcategory_menu_link(self, sub_category, driver):
         driver.find_element(By.XPATH,
-                            "//a[contains(@class,'tile-cats__heading') and contains(.,'%s')]" % str(
-                                sub_category)).click()
+                            f"//a[contains(@class,'tile-cats__heading') and contains(.,'{sub_category}')]").click()
         time.sleep(3)

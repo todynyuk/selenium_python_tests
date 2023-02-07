@@ -31,8 +31,11 @@ class ShoppingBasket(object):
 
     def isBasketEmptyStatusTextPresent(self, driver):
         try:
+            time.sleep(2)
             driver.find_element(By.XPATH, "//h4[@class='cart-dummy__heading']")
+            time.sleep(2)
         except NoSuchElementException:
+            time.sleep(2)
             return False
         return True
 
