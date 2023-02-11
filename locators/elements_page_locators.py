@@ -16,6 +16,7 @@ class DevicePageLocators:
 
 
 class DeviceCategoryLocators:
+    FILTER_LINKS = "//li[contains(@class,'selection')]//a[contains(@class,'link')]"
     OK_BUTTON = "//button[contains(@class,'slider-filter__button')]"
     DEVICE_PRICES = "//span[@class='goods-tile__price-value']"
     GOODS_TITLE_TEXT = "//span[@class='goods-tile__title']"
