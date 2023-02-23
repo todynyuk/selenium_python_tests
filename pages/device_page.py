@@ -11,7 +11,6 @@ class DevicePage(BasePage):
         super().__init__(web_driver)
 
     def verify_device_short_characteristic(self, driver, param):
-        time.sleep(3)
         short_characteristic = driver.find_element(By.XPATH, DevicePageLocators.SHORT_CHARACTERISTICS_TITLE).text
         return short_characteristic.__contains__(str(param))
 
@@ -23,11 +22,9 @@ class DevicePage(BasePage):
         return chosen_product_price
 
     def verifyChosenParameterInShortCharacteristics(self, driver, param):
-        time.sleep(3)
         short_characteristic = driver.find_element(By.XPATH, DevicePageLocators.SHORT_CHARACTERISTIC).text
         return short_characteristic.__contains__(str(param))
 
     def verifyChosenParamInAllCharacteristics(self, driver, param):
-        time.sleep(3)
         short_characteristic = driver.find_element(By.XPATH, DevicePageLocators.ALL_CHARACTERISTIC).text
         return short_characteristic.__contains__(str(param))
