@@ -7,7 +7,7 @@ from pages.shopping_basket import ShoppingBasket
 from pages.sub_category_page import SubCategory
 import pytest
 import logging
-from pytest_zebrunner import attach_test_artifact
+from pytest_zebrunner import attach_test_artifact, attach_test_screenshot
 import pyscreenrec
 from utils.attachments import attach_screenshot, attach_logs, attach_recorded_video
 
@@ -117,24 +117,24 @@ class TestRozetkaFilters:
             DeviceCategory.click_check_box_filter(self, driver, "Новий")
             attach_screenshot()
             DeviceCategory.click_check_box_filter(self, driver, "Є в наявності")
-            end_time = time.time()
-            attach_recorded_video(self, start_time, end_time, seconds, recorder)
             attach_screenshot()
             length = DeviceCategory.check_is_all_goods_available(self, driver,
                                                                  "Немає в наявності")
             assert length == 0, "One or more goods are not available"
             DeviceCategory.clickLinkMoreAboutDevice(self, driver, 1)
             assert DevicePage.verifyChosenParameterInShortCharacteristics(self, driver, "Intel Core i5"), \
-                "Processor name text not contains in about device text"
+                "Processor name text not contains in about device text"#test was failed it this line
             assert DevicePage.verifyChosenParameterInShortCharacteristics(self, driver, "8 ГБ"), \
                 "Ram text not contains in about device text"
             assert DevicePage.verifyChosenParameterInShortCharacteristics(self, driver, "IPS"), \
                 "Matrix type text not contains in about device text"
             assert DevicePage.verifyChosenParamInAllCharacteristics(self, driver,
                                                                     "Моноблок"), "Computer type text not contains in description device text"
+            end_time = time.time()
+            attach_recorded_video(self, start_time, end_time, seconds, recorder)
             attach_logs(logging.INFO, 'Test was successful')
 
-        @pytest.mark.skip(reason="Rozetka have problem with sorting from hight to low price")
+        @pytest.mark.skip(reason="Rozetka have problem with sorting by price")
         @allure.title('Check filter by price')
         def testVerifySortByPrice(self, driver):
             start_time = time.time()
@@ -149,12 +149,13 @@ class TestRozetkaFilters:
             SubCategory.click_universal_subcategory_menu_link(self, "Мобільні", driver)
             attach_screenshot()
             DeviceCategory.clickDropdownOption(self, driver, "Від дешевих до дорогих")
-            end_time = time.time()
-            attach_recorded_video(self, start_time, end_time, seconds, recorder)
             attach_screenshot()
             is_good_prices_low_to_hight = DeviceCategory.isAllGoodsSortedFromLowToHighPrice(self, driver)
             assert is_good_prices_low_to_hight, "One or more prices not sorted from low to high price"
             DeviceCategory.clickDropdownOption(self, driver, "Від дорогих до дешевих")
+            end_time = time.time()
+            attach_recorded_video(self, start_time, end_time, seconds, recorder)
+            attach_screenshot()
             is_good_prices_hight_to_low = DeviceCategory.isAllGoodsSortedFromHighToLowPrice(self, driver)
             assert is_good_prices_hight_to_low, "One or more prices not sorted from high to low price"
             attach_logs(logging.INFO, 'Test was successful')
@@ -197,20 +198,17 @@ class TestRozetkaFilters:
             attach_screenshot()
             DeviceCategory.click_check_box_filter(self, driver, "Huawei")
             attach_screenshot()
-            time.sleep(1)
             DeviceCategory.click_check_box_filter(self, driver, "Infinix")
             attach_screenshot()
-            time.sleep(1)
             DeviceCategory.click_check_box_filter(self, driver, "Motorola")
             end_time = time.time()
             attach_recorded_video(self, start_time, end_time, seconds, recorder)
             attach_screenshot()
-            time.sleep(1)
-            assert DeviceCategory.check_chosen_filters_contains_chosen_brands(self, "Huawei"), \
+            assert DeviceCategory.check_chosen_filters_contains_chosen_brands(self,driver, "Huawei"), \
                 "List chosen parameters not contains this parameter"
-            assert DeviceCategory.check_chosen_filters_contains_chosen_brands(self, "Infinix"), \
+            assert DeviceCategory.check_chosen_filters_contains_chosen_brands(self,driver, "Infinix"), \
                 "List chosen parameters not contains this parameter"
-            assert DeviceCategory.check_chosen_filters_contains_chosen_brands(self, "Motorola"), \
+            assert DeviceCategory.check_chosen_filters_contains_chosen_brands(self,driver, "Motorola"), \
                 "List chosen parameters not contains this parameter"
             attach_logs(logging.INFO, 'Test was successful')
 
@@ -235,10 +233,10 @@ class TestRozetkaFilters:
             attach_screenshot()
             smartphone_price = DeviceCategory.getSmartphonePriceText(self, driver, 1)
             DeviceCategory.clickLinkMoreAboutDevice(self, driver, 1)
-            end_time = time.time()
-            attach_recorded_video(self, start_time, end_time, seconds, recorder)
             attach_screenshot()
             short_characteristics = DevicePage.verify_device_short_characteristic(self, driver, 12)
+            end_time = time.time()
+            attach_recorded_video(self, start_time, end_time, seconds, recorder)
             chosen_device_price = DevicePage.get_chosen_product_price(self, driver)
             assert short_characteristics, "Short_characteristics don't contains chosen ram capacity"
             assert str(smartphone_price) == chosen_device_price, "Prices are not equals"

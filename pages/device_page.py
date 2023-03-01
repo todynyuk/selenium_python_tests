@@ -18,10 +18,14 @@ class DevicePage(BasePage):
         return driver.find_element(By.XPATH, DevicePageLocators.SHORT_CHARACTERISTICS_TITLE).text
 
     def get_chosen_product_price(self, driver):
+        time.sleep(3)
         chosen_product_price = re.sub('\D', '', driver.find_element(By.XPATH, DevicePageLocators.PRODUCT_PRICE).text)
         return chosen_product_price
 
     def verifyChosenParameterInShortCharacteristics(self, driver, param):
+        time.sleep(3)
+        driver.execute_script("arguments[0].scrollIntoView();",
+                              driver.find_element(By.XPATH, DevicePageLocators.SHORT_CHARACTERISTIC))
         short_characteristic = driver.find_element(By.XPATH, DevicePageLocators.SHORT_CHARACTERISTIC).text
         return short_characteristic.__contains__(str(param))
 
