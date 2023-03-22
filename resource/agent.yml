@@ -3,7 +3,7 @@ reporting:
   project-key: CR2
   send-logs: true
   server:
-    hostname: localhost:8080
+    hostname: https://solvdinternal.zebrunner.com
     access-token: gC8t96akR7dQ188VK0kihWJ57LqWiOoucbdqgL9JXpZMZVF5Gx
   notification:
     notify-on-each-failure: true
