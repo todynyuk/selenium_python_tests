@@ -10,7 +10,7 @@ class Test_API:
 
     def test_request_response(self):
         response = requests.get('https://solvdinternal.zebrunner.com')
-        assert response.ok, "Error: Response not as expected."
+        assert response.ok, "Response not as expected."
 
     def test_create_task(self):
         payload = new_task_payload(self)
@@ -25,8 +25,8 @@ class Test_API:
         assert get_task_response.status_code == 200, \
             f"Error: status code is not correct. Expected: 200, Actual: {get_task_response.status_code}"
         get_task_data = get_task_response.json()
-        assert get_task_data["content"] == payload["content"], "Error: Values are not equals"
-        assert get_task_data["user_id"] == payload["user_id"], "Error: Values are not equals"
+        assert get_task_data["content"] == payload["content"], "Values are not equals"
+        assert get_task_data["user_id"] == payload["user_id"], "Values are not equals"
 
     def test_update_task(self):
         payload = new_task_payload(self)
@@ -47,8 +47,8 @@ class Test_API:
         assert get_task_response.status_code == 200, \
             f"Error: status code is not correct. Expected: 200, Actual: {get_task_response.status_code}"
         get_task_data = get_task_response.json()
-        assert get_task_data["content"] == new_payload["content"], "Error: Values are not equals"
-        assert get_task_data["user_id"] == new_payload["user_id"], "Error: Values are not equals"
+        assert get_task_data["content"] == new_payload["content"], "Values are not equals"
+        assert get_task_data["user_id"] == new_payload["user_id"], "Values are not equals"
 
     def test_list_tasks(self):
         count = 3
@@ -63,7 +63,7 @@ class Test_API:
             f"Error: status code is not correct. Expected: 200, Actual: {list_task_response.status_code}"
         data = list_task_response.json()
         tasks = data["tasks"]
-        assert len(tasks) == count, "Error: Values are not equals"
+        assert len(tasks) == count, "Values are not equals"
 
     def test_delete_task(self):
         payload = new_task_payload(self)
