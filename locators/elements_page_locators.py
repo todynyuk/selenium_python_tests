@@ -10,7 +10,7 @@ class MainPageLocators:
 
 class DevicePageLocators:
     SHORT_CHARACTERISTICS_TITLE = "//h1[@class='product__title']"
-    PRODUCT_PRICE = "//p[contains(@class,'product-prices__big')]"
+    PRODUCT_PRICE = "//p[contains(@class,'product-price__big')]"
     SHORT_CHARACTERISTIC = "//p[@class='product-about__brief ng-star-inserted']"
     ALL_CHARACTERISTIC = "//h3[@class='product-tabs__heading']//span[contains(@class,'heading_color_gray')]"
 

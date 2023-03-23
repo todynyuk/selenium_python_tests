@@ -1,4 +1,4 @@
-from selenium.webdriver import ActionChains, Keys
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 import time
 import re
@@ -137,3 +137,10 @@ class DeviceCategory(BasePage):
 
     def go_to_up_page(self, driver):
         driver.execute_script("window.scrollTo(0, 220)")
+
+    def check_chosen_filters_contains_chosen_brands(self, driver, chosen_brand):
+        chosen_filters = []
+        chosen_filtersText = driver.find_elements(By.XPATH, DeviceCategoryLocators.FILTER_LINKS)
+        for i in chosen_filtersText:
+            chosen_filters.append(str(i.text).replace(' ', ''))
+        return chosen_filters.__contains__(chosen_brand)
